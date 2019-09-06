@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zm.mr.dao.MeetingRoomOrderMapper">
+  <resultMap id="BaseResultMap" type="com.zm.mr.model.MeetingRoomOrder">
+    <id column="Order_Id" jdbcType="INTEGER" property="orderId" />
+    <result column="Order_No" jdbcType="VARCHAR" property="orderNo" />
+    <result column="User_Id" jdbcType="INTEGER" property="userId" />
+    <result column="Room_Id" jdbcType="INTEGER" property="roomId" />
+    <result column="Order_Date" jdbcType="TIMESTAMP" property="orderDate" />
+    <result column="Description" jdbcType="VARCHAR" property="description" />
+    <result column="Star_Date_Plan" jdbcType="TIMESTAMP" property="starDatePlan" />
+    <result column="End_Date_Plan" jdbcType="TIMESTAMP" property="endDatePlan" />
+    <result column="Star_Date_Actual" jdbcType="TIMESTAMP" property="starDateActual" />
+    <result column="End_Date_Actual" jdbcType="TIMESTAMP" property="endDateActual" />
+    <result column="Status_Id" jdbcType="INTEGER" property="statusId" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <result column="Create_User_Id" jdbcType="INTEGER" property="createUserId" />
+    <result column="Create_Time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="Update_Time" jdbcType="TIMESTAMP" property="updateTime" />
+    <association property="user" column="User_ID" select="com.zm.mr.dao.UserMapper.selectByPrimaryKey" />
+    <association property="room" column="Room_ID" select="com.zm.mr.dao.MeetingRoomMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <foreach collection="oredCriteria" item="criteria" separator="or">
+      <if test="criteria.valid">
+        <trim prefix="(" prefixOverrides="and" suffix=")">
+          <foreach collection="criteria.criteria" item="criterion">
+            <choose>
+              <when test="criterion.noValue">
+                and ${criterion.condition}
+              </when>
+              <when test="criterion.singleValue">
+                and ${criterion.condition} #{criterion.value}
+              </when>
+              <when test="criterion.betweenValue">
+                and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+              </when>
+              <when test="criterion.listValue">
+                and ${criterion.condition}
+                <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                  #{listItem}
+                </foreach>
+              </when>
+            </choose>
+          </foreach>
+        </trim>
+      </if>
+    </foreach>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <foreach collection="example.oredCriteria" item="criteria" separator="or">
+      <where>
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </where>
+    </foreach>
+  </sql>
+  <sql id="Base_Column_List">
+    Order_Id, Order_No, User_Id, Room_Id, Order_Date, Description, Star_Date_Plan, End_Date_Plan, 
+    Star_Date_Actual, End_Date_Actual, Status_Id, Remark, Create_User_Id, Create_Time, 
+    Update_Time
+  </sql>
+  <select id="selectByExample" parameterType="com.zm.mr.model.MeetingRoomOrderExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_meeting_room_order
+    <where>
+      <if test="_parameter != null">
+        <include refid="Example_Where_Clause" />
+      </if>
+      <if test="startDatePlan != null and endDatePlan != null">
+        <![CDATA[
+          AND (
+            Star_Date_Plan BETWEEN #{startDatePlan} AND #{endDatePlan}
+            OR End_Date_Plan BETWEEN #{startDatePlan} AND #{endDatePlan}
+            OR (Star_Date_Plan <=  #{startDatePlan} AND End_Date_Plan >= #{endDatePlan})
+          )
+        ]]>
+      </if>
+    </where>
+    <if test="groupByClause != null">
+      group by ${groupByClause}
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="pageInfo != null">
+      limit #{pageInfo.pageBegin} , #{pageInfo.pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_meeting_room_order
+    where Order_Id = #{orderId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_meeting_room_order
+    where Order_Id = #{orderId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zm.mr.model.MeetingRoomOrderExample">
+    delete from t_meeting_room_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zm.mr.model.MeetingRoomOrder">
+    <selectKey keyProperty="orderId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_meeting_room_order (Order_No, User_Id, Room_Id, 
+      Order_Date, Description, Star_Date_Plan, 
+      End_Date_Plan, Star_Date_Actual, End_Date_Actual, 
+      Status_Id, Remark, Create_User_Id, 
+      Create_Time, Update_Time)
+    values (#{orderNo,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{roomId,jdbcType=INTEGER}, 
+      #{orderDate,jdbcType=TIMESTAMP}, #{description,jdbcType=VARCHAR}, #{starDatePlan,jdbcType=TIMESTAMP}, 
+      #{endDatePlan,jdbcType=TIMESTAMP}, #{starDateActual,jdbcType=TIMESTAMP}, #{endDateActual,jdbcType=TIMESTAMP}, 
+      #{statusId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createUserId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zm.mr.model.MeetingRoomOrder">
+    <selectKey keyProperty="orderId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_meeting_room_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderNo != null">
+        Order_No,
+      </if>
+      <if test="userId != null">
+        User_Id,
+      </if>
+      <if test="roomId != null">
+        Room_Id,
+      </if>
+      <if test="orderDate != null">
+        Order_Date,
+      </if>
+      <if test="description != null">
+        Description,
+      </if>
+      <if test="starDatePlan != null">
+        Star_Date_Plan,
+      </if>
+      <if test="endDatePlan != null">
+        End_Date_Plan,
+      </if>
+      <if test="starDateActual != null">
+        Star_Date_Actual,
+      </if>
+      <if test="endDateActual != null">
+        End_Date_Actual,
+      </if>
+      <if test="statusId != null">
+        Status_Id,
+      </if>
+      <if test="remark != null">
+        Remark,
+      </if>
+      <if test="createUserId != null">
+        Create_User_Id,
+      </if>
+      <if test="createTime != null">
+        Create_Time,
+      </if>
+      <if test="updateTime != null">
+        Update_Time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="roomId != null">
+        #{roomId,jdbcType=INTEGER},
+      </if>
+      <if test="orderDate != null">
+        #{orderDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="starDatePlan != null">
+        #{starDatePlan,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDatePlan != null">
+        #{endDatePlan,jdbcType=TIMESTAMP},
+      </if>
+      <if test="starDateActual != null">
+        #{starDateActual,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDateActual != null">
+        #{endDateActual,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusId != null">
+        #{statusId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zm.mr.model.MeetingRoomOrderExample" resultType="java.lang.Long">
+    select count(1) from t_meeting_room_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_meeting_room_order
+    <set>
+      <if test="record.orderId != null">
+        Order_Id = #{record.orderId,jdbcType=INTEGER},
+      </if>
+      <if test="record.orderNo != null">
+        Order_No = #{record.orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        User_Id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.roomId != null">
+        Room_Id = #{record.roomId,jdbcType=INTEGER},
+      </if>
+      <if test="record.orderDate != null">
+        Order_Date = #{record.orderDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.description != null">
+        Description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.starDatePlan != null">
+        Star_Date_Plan = #{record.starDatePlan,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endDatePlan != null">
+        End_Date_Plan = #{record.endDatePlan,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.starDateActual != null">
+        Star_Date_Actual = #{record.starDateActual,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endDateActual != null">
+        End_Date_Actual = #{record.endDateActual,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.statusId != null">
+        Status_Id = #{record.statusId,jdbcType=INTEGER},
+      </if>
+      <if test="record.remark != null">
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserId != null">
+        Create_User_Id = #{record.createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        Create_Time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        Update_Time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_meeting_room_order
+    set Order_Id = #{record.orderId,jdbcType=INTEGER},
+      Order_No = #{record.orderNo,jdbcType=VARCHAR},
+      User_Id = #{record.userId,jdbcType=INTEGER},
+      Room_Id = #{record.roomId,jdbcType=INTEGER},
+      Order_Date = #{record.orderDate,jdbcType=TIMESTAMP},
+      Description = #{record.description,jdbcType=VARCHAR},
+      Star_Date_Plan = #{record.starDatePlan,jdbcType=TIMESTAMP},
+      End_Date_Plan = #{record.endDatePlan,jdbcType=TIMESTAMP},
+      Star_Date_Actual = #{record.starDateActual,jdbcType=TIMESTAMP},
+      End_Date_Actual = #{record.endDateActual,jdbcType=TIMESTAMP},
+      Status_Id = #{record.statusId,jdbcType=INTEGER},
+      Remark = #{record.remark,jdbcType=VARCHAR},
+      Create_User_Id = #{record.createUserId,jdbcType=INTEGER},
+      Create_Time = #{record.createTime,jdbcType=TIMESTAMP},
+      Update_Time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zm.mr.model.MeetingRoomOrder">
+    update t_meeting_room_order
+    <set>
+      <if test="orderNo != null">
+        Order_No = #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        User_Id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="roomId != null">
+        Room_Id = #{roomId,jdbcType=INTEGER},
+      </if>
+      <if test="orderDate != null">
+        Order_Date = #{orderDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null">
+        Description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="starDatePlan != null">
+        Star_Date_Plan = #{starDatePlan,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDatePlan != null">
+        End_Date_Plan = #{endDatePlan,jdbcType=TIMESTAMP},
+      </if>
+      <if test="starDateActual != null">
+        Star_Date_Actual = #{starDateActual,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDateActual != null">
+        End_Date_Actual = #{endDateActual,jdbcType=TIMESTAMP},
+      </if>
+      <if test="statusId != null">
+        Status_Id = #{statusId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        Create_User_Id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        Create_Time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        Update_Time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where Order_Id = #{orderId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zm.mr.model.MeetingRoomOrder">
+    update t_meeting_room_order
+    set Order_No = #{orderNo,jdbcType=VARCHAR},
+      User_Id = #{userId,jdbcType=INTEGER},
+      Room_Id = #{roomId,jdbcType=INTEGER},
+      Order_Date = #{orderDate,jdbcType=TIMESTAMP},
+      Description = #{description,jdbcType=VARCHAR},
+      Star_Date_Plan = #{starDatePlan,jdbcType=TIMESTAMP},
+      End_Date_Plan = #{endDatePlan,jdbcType=TIMESTAMP},
+      Star_Date_Actual = #{starDateActual,jdbcType=TIMESTAMP},
+      End_Date_Actual = #{endDateActual,jdbcType=TIMESTAMP},
+      Status_Id = #{statusId,jdbcType=INTEGER},
+      Remark = #{remark,jdbcType=VARCHAR},
+      Create_User_Id = #{createUserId,jdbcType=INTEGER},
+      Create_Time = #{createTime,jdbcType=TIMESTAMP},
+      Update_Time = #{updateTime,jdbcType=TIMESTAMP}
+    where Order_Id = #{orderId,jdbcType=INTEGER}
+  </update>
+</mapper>

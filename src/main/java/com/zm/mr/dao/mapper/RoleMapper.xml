@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zm.mr.dao.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.zm.mr.model.Role">
+    <id column="Role_Id" jdbcType="INTEGER" property="roleId" />
+    <result column="Role_Name" jdbcType="VARCHAR" property="roleName" />
+    <result column="Create_User_Id" jdbcType="INTEGER" property="createUserId" />
+    <result column="Create_Time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="Update_Time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="enabled" jdbcType="INTEGER" property="enabled" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    Role_Id, Role_Name, Create_User_Id, Create_Time, Update_Time, enabled, Remark
+  </sql>
+  <select id="selectByExample" parameterType="com.zm.mr.model.RoleExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_role
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="groupByClause != null">
+      group by ${groupByClause}
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="pageInfo != null">
+      limit #{pageInfo.pageBegin} , #{pageInfo.pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_role
+    where Role_Id = #{roleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_role
+    where Role_Id = #{roleId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zm.mr.model.RoleExample">
+    delete from t_role
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zm.mr.model.Role">
+    <selectKey keyProperty="roleId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_role (Role_Name, Create_User_Id, Create_Time, 
+      Update_Time, enabled, Remark
+      )
+    values (#{roleName,jdbcType=VARCHAR}, #{createUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{enabled,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zm.mr.model.Role">
+    <selectKey keyProperty="roleId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleName != null">
+        Role_Name,
+      </if>
+      <if test="createUserId != null">
+        Create_User_Id,
+      </if>
+      <if test="createTime != null">
+        Create_Time,
+      </if>
+      <if test="updateTime != null">
+        Update_Time,
+      </if>
+      <if test="enabled != null">
+        enabled,
+      </if>
+      <if test="remark != null">
+        Remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zm.mr.model.RoleExample" resultType="java.lang.Long">
+    select count(1) from t_role
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_role
+    <set>
+      <if test="record.roleId != null">
+        Role_Id = #{record.roleId,jdbcType=INTEGER},
+      </if>
+      <if test="record.roleName != null">
+        Role_Name = #{record.roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserId != null">
+        Create_User_Id = #{record.createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        Create_Time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        Update_Time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.enabled != null">
+        enabled = #{record.enabled,jdbcType=INTEGER},
+      </if>
+      <if test="record.remark != null">
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_role
+    set Role_Id = #{record.roleId,jdbcType=INTEGER},
+      Role_Name = #{record.roleName,jdbcType=VARCHAR},
+      Create_User_Id = #{record.createUserId,jdbcType=INTEGER},
+      Create_Time = #{record.createTime,jdbcType=TIMESTAMP},
+      Update_Time = #{record.updateTime,jdbcType=TIMESTAMP},
+      enabled = #{record.enabled,jdbcType=INTEGER},
+      Remark = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zm.mr.model.Role">
+    update t_role
+    <set>
+      <if test="roleName != null">
+        Role_Name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        Create_User_Id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        Create_Time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        Update_Time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Role_Id = #{roleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zm.mr.model.Role">
+    update t_role
+    set Role_Name = #{roleName,jdbcType=VARCHAR},
+      Create_User_Id = #{createUserId,jdbcType=INTEGER},
+      Create_Time = #{createTime,jdbcType=TIMESTAMP},
+      Update_Time = #{updateTime,jdbcType=TIMESTAMP},
+      enabled = #{enabled,jdbcType=INTEGER},
+      Remark = #{remark,jdbcType=VARCHAR}
+    where Role_Id = #{roleId,jdbcType=INTEGER}
+  </update>
+</mapper>
