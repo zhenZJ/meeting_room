@@ -11,7 +11,6 @@
   `jdbc.username= //数据库用户名`<br>
   `jdbc.password= //数据库密码`<br>
  - 使用tomcat部署
-- 数据库连接修改:/src/main/resources/db.properties 使用tomcat部署
 
 ## 代码生成工具使用
 - 配置生成表格
