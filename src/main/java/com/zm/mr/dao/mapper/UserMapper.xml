@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zm.mr.dao.UserMapper">
+  
+  <resultMap id="BaseResultMap" type="com.zm.mr.model.User">
+    <id column="User_Id" jdbcType="INTEGER" property="userId" />
+    <result column="User_No" jdbcType="VARCHAR" property="userNo" />
+    <result column="User_Name" jdbcType="VARCHAR" property="userName" />
+    <result column="Role_ID" jdbcType="INTEGER" property="roleId" />
+    <result column="Age" jdbcType="INTEGER" property="age" />
+    <result column="Sex" jdbcType="VARCHAR" property="sex" />
+    <result column="User_Account" jdbcType="VARCHAR" property="userAccount" />
+    <result column="User_Pwd" jdbcType="VARCHAR" property="userPwd" />
+    <result column="Phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="enabled" jdbcType="INTEGER" property="enabled" />
+    <result column="Create_UserId" jdbcType="INTEGER" property="createUserid" />
+    <result column="Create_Time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="Update_Time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="Remark" jdbcType="VARCHAR" property="remark" />
+    <association property="role" column="Role_ID" select="com.zm.mr.dao.RoleMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    User_Id, User_No, User_Name, Role_ID, Age, Sex, User_Account, User_Pwd, Phone, email, 
+    enabled, Create_UserId, Create_Time, Update_Time, Remark
+  </sql>
+  <select id="selectByExample" parameterType="com.zm.mr.model.UserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="groupByClause != null">
+      group by ${groupByClause}
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="pageInfo != null">
+      limit #{pageInfo.pageBegin} , #{pageInfo.pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where User_Id = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_user
+    where User_Id = #{userId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zm.mr.model.UserExample">
+    delete from t_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zm.mr.model.User">
+    <selectKey keyProperty="userId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_user (User_No, User_Name, Role_ID, 
+      Age, Sex, User_Account, 
+      User_Pwd, Phone, email, 
+      enabled, Create_UserId, Create_Time, 
+      Update_Time, Remark)
+    values (#{userNo,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{roleId,jdbcType=INTEGER}, 
+      #{age,jdbcType=INTEGER}, #{sex,jdbcType=VARCHAR}, #{userAccount,jdbcType=VARCHAR}, 
+      #{userPwd,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{enabled,jdbcType=INTEGER}, #{createUserid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zm.mr.model.User">
+    <selectKey keyProperty="userId" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userNo != null">
+        User_No,
+      </if>
+      <if test="userName != null">
+        User_Name,
+      </if>
+      <if test="roleId != null">
+        Role_ID,
+      </if>
+      <if test="age != null">
+        Age,
+      </if>
+      <if test="sex != null">
+        Sex,
+      </if>
+      <if test="userAccount != null">
+        User_Account,
+      </if>
+      <if test="userPwd != null">
+        User_Pwd,
+      </if>
+      <if test="phone != null">
+        Phone,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="enabled != null">
+        enabled,
+      </if>
+      <if test="createUserid != null">
+        Create_UserId,
+      </if>
+      <if test="createTime != null">
+        Create_Time,
+      </if>
+      <if test="updateTime != null">
+        Update_Time,
+      </if>
+      <if test="remark != null">
+        Remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userNo != null">
+        #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="age != null">
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="userAccount != null">
+        #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="userPwd != null">
+        #{userPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=INTEGER},
+      </if>
+      <if test="createUserid != null">
+        #{createUserid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zm.mr.model.UserExample" resultType="java.lang.Long">
+    select count(1) from t_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_user
+    <set>
+      <if test="record.userId != null">
+        User_Id = #{record.userId,jdbcType=INTEGER},
+      </if>
+      <if test="record.userNo != null">
+        User_No = #{record.userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null">
+        User_Name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.roleId != null">
+        Role_ID = #{record.roleId,jdbcType=INTEGER},
+      </if>
+      <if test="record.age != null">
+        Age = #{record.age,jdbcType=INTEGER},
+      </if>
+      <if test="record.sex != null">
+        Sex = #{record.sex,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userAccount != null">
+        User_Account = #{record.userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userPwd != null">
+        User_Pwd = #{record.userPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null">
+        Phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null">
+        email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.enabled != null">
+        enabled = #{record.enabled,jdbcType=INTEGER},
+      </if>
+      <if test="record.createUserid != null">
+        Create_UserId = #{record.createUserid,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        Create_Time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        Update_Time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remark != null">
+        Remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_user
+    set User_Id = #{record.userId,jdbcType=INTEGER},
+      User_No = #{record.userNo,jdbcType=VARCHAR},
+      User_Name = #{record.userName,jdbcType=VARCHAR},
+      Role_ID = #{record.roleId,jdbcType=INTEGER},
+      Age = #{record.age,jdbcType=INTEGER},
+      Sex = #{record.sex,jdbcType=VARCHAR},
+      User_Account = #{record.userAccount,jdbcType=VARCHAR},
+      User_Pwd = #{record.userPwd,jdbcType=VARCHAR},
+      Phone = #{record.phone,jdbcType=VARCHAR},
+      email = #{record.email,jdbcType=VARCHAR},
+      enabled = #{record.enabled,jdbcType=INTEGER},
+      Create_UserId = #{record.createUserid,jdbcType=INTEGER},
+      Create_Time = #{record.createTime,jdbcType=TIMESTAMP},
+      Update_Time = #{record.updateTime,jdbcType=TIMESTAMP},
+      Remark = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zm.mr.model.User">
+    update t_user
+    <set>
+      <if test="userNo != null">
+        User_No = #{userNo,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        User_Name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        Role_ID = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="age != null">
+        Age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="sex != null">
+        Sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="userAccount != null">
+        User_Account = #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="userPwd != null">
+        User_Pwd = #{userPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        Phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled,jdbcType=INTEGER},
+      </if>
+      <if test="createUserid != null">
+        Create_UserId = #{createUserid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        Create_Time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        Update_Time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        Remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where User_Id = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zm.mr.model.User">
+    update t_user
+    set User_No = #{userNo,jdbcType=VARCHAR},
+      User_Name = #{userName,jdbcType=VARCHAR},
+      Role_ID = #{roleId,jdbcType=INTEGER},
+      Age = #{age,jdbcType=INTEGER},
+      Sex = #{sex,jdbcType=VARCHAR},
+      User_Account = #{userAccount,jdbcType=VARCHAR},
+      User_Pwd = #{userPwd,jdbcType=VARCHAR},
+      Phone = #{phone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      enabled = #{enabled,jdbcType=INTEGER},
+      Create_UserId = #{createUserid,jdbcType=INTEGER},
+      Create_Time = #{createTime,jdbcType=TIMESTAMP},
+      Update_Time = #{updateTime,jdbcType=TIMESTAMP},
+      Remark = #{remark,jdbcType=VARCHAR}
+    where User_Id = #{userId,jdbcType=INTEGER}
+  </update>
+</mapper>
