@@ -25,6 +25,6 @@
   `tableName`数据库表名称 <br>
   `domainObjectName` bean名称<br>
   `column` 主键<br>
-  `sqlStatement` 数据库类型<br>
+  `sqlStatement` 数据库类型2<br>
 - 启动生成工具
   /src/main/java/run/generator/Generator.java
